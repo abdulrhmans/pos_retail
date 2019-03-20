@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="popup_selection_promotions">
+        <div class="modal-dialog">
+            <div class="popup touch-scrollable scrollable-y" style="max-height: 600px;min-height: 300px;height: fit-content;">
+                <div class="card">
+                    <div class="card-content">
+                        <h4 class="card-title">
+                            <t t-if="widget.options.title">
+                                <t t-esc="widget.options.title"/>
+                            </t>
+                        </h4>
+                        <div class="table-responsive">
+                            <div class='body'>
+                            </div>
+                            <div class="form-footer text-center">
+                                <div class="btn btn-success confirm">
+                                    <i class="fa fa-check"/> Add promotions
+                                </div>
+                                <div class="btn btn-danger add_all">
+                                    <i class="fa fa-check"/> Add all
+                                </div>
+                                <div class="btn btn-danger cancel">
+                                    Cancel
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="promotion_list">
+        <t t-if="promotions" >
+            <t t-foreach="promotions" t-as="promotion">
+                <span class='product left_button' t-att-data-id="promotion.id">
+                    <div class="button_icon">
+                        <img src="/pos_retail/static/src/icons/promotions.png" class="pos_logo"/>
+                    </div>
+                    <div class="product-name button_text">
+                        <t t-esc="promotion.name"/>
+                    </div>
+                </span>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="button_promotion">
+        <span class="product left_button">
+            <div class="button_icon">
+                <img src="/pos_retail/static/src/icons/promotions.png" class="pos_logo"/>
+            </div>
+            <div class="product-name button_text">
+                Add promotions
+            </div>
+        </span>
+    </t>
+
+    <t t-name="button_remove_promotion">
+        <span class="product left_button">
+            <div class="button_icon">
+                <img src="/pos_retail/static/src/icons/trash.png" class="pos_logo"/>
+            </div>
+            <div class="product-name button_text">
+                Remove promotions
+            </div>
+        </span>
+    </t>
+
+    <t t-name="promotion_recommend_customer">
+        <t t-if="promotions">
+            <ul class="info-list">
+                <t t-foreach="promotions" t-as="promotion">
+                    <li class="info promotion_active">
+                        <img class="order_line_logo" src="/pos_retail/static/src/icons/rewards.png"/>
+                        <t t-esc="promotion['name']"/>
+                    </li>
+                </t>
+            </ul>
+        </t>
+    </t>
+
+    <t t-extend="Orderline">
+        <t t-jquery="ul[class*='info-list']:first" t-operation="append">
+            <t t-if="line.promotion">
+                <ul class="bus-info">
+                    <li class="info">
+                        <t t-esc="line.promotion_reason"/>
+                    </li>
+                </ul>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="OrderWidget">
+        <t t-jquery=".summary" t-operation="append">
+            <t t-if="widget.pos.promotions and widget.pos.promotions.length > 0">
+                <div class="promotion_details touch-scrollable scrollable-y" style="max-height: 70px">
+                    <li class="info">
+                        <div class="promotion_recommend_customer"/>
+                    </li>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="XmlReceipt">
+         <t t-jquery="line[class*='total']" t-operation="before">
+            <t t-if="pos.config.promotion == true and receipt.promotion_amount">
+                <line class='total' size='double-height'>
+                    <left><pre>        Promotions</pre></left>
+                    <right><value><t t-esc='receipt.promotion_amount || 0.00' /></value></right>
+                </line>
+                <br/>
+                <line><right>--------</right></line>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="button_buyer_promotion">
+        <span class="product left_button">
+            <div class="button_icon">
+                <img src="/pos_retail/static/src/icons/promotions.png" class="pos_logo"/>
+            </div>
+            <div class="product-name button_text">
+                Buyer promotion
+            </div>
+        </span>
+    </t>
+
+</templates>

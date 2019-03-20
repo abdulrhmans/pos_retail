@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="button_sync_orders">
+        <span class="product left_button">
+            <div class="button_icon">
+                <img src="/pos_retail/static/src/icons/sync.png" class="pos_logo"/>
+            </div>
+            <div class="product-name button_text">
+                Sync orders
+            </div>
+        </span>
+    </t>
+
+    <t t-extend="Orderline">
+        <t t-jquery="ul[class*='info-list']:first" t-operation="append">
+            <t t-if="widget.pos.config.display_person_add_line">
+                <t t-if="line.session_info and line.session_info.user and line.session_info.date">
+                    <ul class="bus-info">
+                        <li class="info">
+                            <t t-esc="line.session_info.user.name"/> added at <t t-esc="line.session_info.date"/>
+                        </li>
+                    </ul>
+                </t>
+            </t>
+        </t>
+    </t>
+
+</templates>

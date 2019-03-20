@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="product_template_supplier_barcode" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='barcode']" position="after">
+                    <field name="supplier_barcode"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_pos_retail" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='list_price']" position="before">
+                    <field name="minimum_list_price"/>
+                </xpath>
+                <xpath expr="//div[@name='options']" position="after">
+                    <div name="combo" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="sale_extra"/>
+                            <label for="sale_extra" string="Sale extra"/>
+                        </div>
+                        <div>
+                            <field name="is_voucher"/>
+                            <label for="is_voucher" string="Voucher"/>
+                        </div>
+                        <div>
+                            <field name="is_combo"/>
+                            <label for="is_combo" string="Combo/pack"/>
+                        </div>
+                        <div>
+                            <field name="is_credit"/>
+                            <label for="is_credit" string="Credit"/>
+                        </div>
+                    </div>
+                    <div name="multi_unit_of_measure" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="multi_uom"/>
+                            <label for="multi_uom" string="Multi unit of measure"/>
+                        </div>
+                    </div>
+                    <div name="multi_category" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="multi_category"/>
+                            <label for="multi_category" string="Multi Category"/>
+                        </div>
+                    </div>
+                    <div name="multi_variant" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="multi_variant"/>
+                            <label for="multi_variant" string="Multi variant"/>
+                        </div>
+                    </div>
+                    <div name="manufacturing_out_of_stock" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="manufacturing_out_of_stock"/>
+                            <label for="manufacturing_out_of_stock" string="Auto manufacturing"/>
+                        </div>
+                    </div>
+                    <div name="cross_selling" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="cross_selling"/>
+                            <label for="cross_selling" string="Cross selling"/>
+                        </div>
+                    </div>
+                    <div name="suggestion_sale" groups="point_of_sale.group_pos_manager">
+                        <div>
+                            <field name="suggestion_sale"/>
+                            <label for="suggestion_sale" string="Suggestion sale"/>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//page[1]" position="after">
+                    <page string="Sale Extra">
+                        <div name="sale_extra" attrs="{'invisible': [('sale_extra', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <field name="sale_extra_item_ids" nolabel="1"
+                                   attrs="{'required': [('sale_extra', '=', True)]}">
+                                <tree string="Sale extra items" editable="1">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="list_price"/>
+                                </tree>
+                            </field>
+                        </div>
+                    </page>
+                    <page string="POS Retail">
+                        <group>
+                            <field name="pos_sequence"/>
+                            <field name="bus_ids" widget="many2many_tags"/>
+                        </group>
+                        <div class="Quantities Pack">
+                            <separator string="Pack Quantities"/>
+                            <field name="pack_ids" nolabel="1">
+                                <tree string="Pack Quantities" editable="1">
+                                    <field name="public_price"/>
+                                    <field name="quantity"/>
+                                    <field name="barcode"/>
+                                    <field name="active"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="mrp" attrs="{'invisible': [('manufacturing_out_of_stock', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <group>
+                                <field name="manufacturing_state"
+                                       attrs="{'invisible': ['|', ('manufacturing_out_of_stock', '=', False), ('available_in_pos', '=', False)], 'required': [('manufacturing_out_of_stock', '=', True), ('available_in_pos', '=', True)]}"/>
+                                <field name="pos_min_qty"
+                                       attrs="{'invisible': ['|', ('manufacturing_out_of_stock', '=', False), ('available_in_pos', '=', False)], 'required': [('manufacturing_out_of_stock', '=', True), ('available_in_pos', '=', True)]}"/>
+                                <field name="pos_manufacturing_quantity"
+                                       attrs="{'invisible': ['|', ('manufacturing_out_of_stock', '=', False), ('available_in_pos', '=', False)], 'required': [('manufacturing_out_of_stock', '=', True), ('available_in_pos', '=', True)]}"/>
+                                <field name="bom_id" context="{'default_product_tmpl_id': active_id}"
+                                       attrs="{'invisible': ['|', ('manufacturing_out_of_stock', '=', False), ('available_in_pos', '=', False)]}"/>
+                            </group>
+                        </div>
+                        <div name="combo" attrs="{'invisible': [('is_combo', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <group>
+                                <field name="combo_limit" required="1"/>
+                            </group>
+                            <separator string="Combo items"/>
+                            <field name="pos_combo_item_ids" nolabel="1"
+                                   attrs="{'required': [('is_combo', '=', True)]}">
+                                <tree string="Combo items" editable="1">
+                                    <field name="product_id" options="{'no_create_edit': True}"/>
+                                    <field name="quantity" options="{'no_create_edit': True}"/>
+                                    <field name="uom_id"/>
+                                    <field name="default" options="{'no_create_edit': True}"/>
+                                    <field name="tracking"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="pos_multi_category" attrs="{'invisible': [('multi_category', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <separator string="POS multi category"/>
+                            <field name="pos_categ_ids" widget="many2many_tags"
+                                   attrs="{'required': [('multi_category', '=', True)]}"/>
+                        </div>
+                        <div name="pos_multi_unit_of_measure" attrs="{'invisible': [('multi_uom', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <separator string="POS multi unit measure"/>
+                            <field name="price_uom_ids">
+                                <tree string="Unit of measure and price" editable="1">
+                                    <field name="uom_id"/>
+                                    <field name="price"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="pos_product_multi_variant" attrs="{'invisible': [('multi_variant', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <separator string="POS product variants"/>
+                            <field name="pos_variant_ids" groups="point_of_sale.group_pos_manager"
+                                   attrs="{'required': [('multi_variant', '=', True)], 'invisible': [('multi_variant', '!=', True)]}">
+                                <tree string="Variants" editable="1">
+                                    <field name="attribute_id"/>
+                                    <field name="value_id" domain="[('attribute_id', '=', attribute_id)]"/>
+                                    <field name="price_extra"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="active"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="cross_selling" attrs="{'invisible': [('cross_selling', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <separator string="Cross Selling"/>
+                            <field name="cross_ids">
+                                <tree string="Cross Items" editable="1">
+                                    <field name="product_id"/>
+                                    <field name="list_price"/>
+                                    <field name="quantity"/>
+                                    <field name="discount_type"/>
+                                    <field name="discount"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="suggestion_sale" attrs="{'invisible': [('suggestion_sale', '=', False)]}"
+                             groups="point_of_sale.group_pos_manager">
+                            <separator string="Suggestion sale"/>
+                            <field name="suggestion_ids" nolabel="1">
+                                <tree string="Suggestion products" editable="1">
+                                    <field name="product_id"/>
+                                    <field name="list_price"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <div name="barcode">
+                            <separator string="Multi barcode"/>
+                            <field name="barcode_ids" nolabel="1">
+                                <tree string="Barcode" editable="1">
+                                    <field name="barcode"/>
+                                    <field name="quantity"/>
+                                    <field name="list_price"/>
+                                    <field name="uom_id"/>
+                                </tree>
+                            </field>
+                        </div>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="attribute_tree_view" model="ir.ui.view">
+            <field name="name">product.attribute.tree</field>
+            <field name="model">product.attribute</field>
+            <field name="inherit_id" ref="product.attribute_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_variant']" position="before">
+                    <field name="multi_choice"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_attribute_view_form" model="ir.ui.view">
+            <field name="name">product.attribute.tree</field>
+            <field name="model">product.attribute</field>
+            <field name="inherit_id" ref="product.product_attribute_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_variant']" position="before">
+                    <field name="multi_choice"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_variant_form" model="ir.ui.view">
+            <field name="name">product.variant.form</field>
+            <field name="model">product.variant</field>
+            <field name="arch" type="xml">
+                <form string="Variants of product">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_tmpl_id"/>
+                                <field name="attribute_id"/>
+                                <field name="value_id" domain="[('attribute_id', '=', attribute_id)]"/>
+                                <field name="price_extra"/>
+                            </group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="uom_id"/>
+                                <field name="quantity"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_variant_tree" model="ir.ui.view">
+            <field name="name">product.variant.tree</field>
+            <field name="model">product.variant</field>
+            <field name="arch" type="xml">
+                <tree string="Variants of product">
+                    <field name="product_tmpl_id"/>
+                    <field name="attribute_id"/>
+                    <field name="value_id" domain="[('attribute_id', '=', attribute_id)]"/>
+                    <field name="price_extra"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="quantity"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_variant_search" model="ir.ui.view">
+            <field name="name">product.variant.search</field>
+            <field name="model">product.variant</field>
+            <field name="arch" type="xml">
+                <search string="Variants of product">
+                    <field name="product_tmpl_id"/>
+                    <field name="attribute_id"/>
+                    <field name="value_id"/>
+                    <field name="price_extra"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="quantity"/>
+                    <field name="active"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="product_variant_action">
+            <field name="name">Variants of products</field>
+            <field name="res_model">product.variant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_product_variants"
+                  action="product_variant_action"
+                  parent="menu_product_variant"
+                  sequence="100"
+                  groups="point_of_sale.group_pos_manager"
+        />
+
+        <record model="ir.actions.act_window" id="product_combo">
+            <field name="name">Combo/Packs</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[('is_combo', '=', True)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_product_combo"
+                  action="product_combo"
+                  parent="point_of_sale.pos_config_menu_catalog"
+                  sequence="100"
+                  groups="point_of_sale.group_pos_manager"
+        />
+
+    </data>
+</odoo>
+

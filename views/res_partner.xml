@@ -1,0 +1,47 @@
+<odoo>
+    <data>
+	    <!-- <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lang']" position="after">
+                    <field name="pos_loyalty_point" groups="point_of_sale.group_pos_manager"/>
+                    <field name="pos_loyalty_type" groups="point_of_sale.group_pos_manager"/>
+                    <field name="wallet" groups="point_of_sale.group_pos_manager"/>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="limit_debit" groups="point_of_sale.group_pos_manager"/>
+                    <field name="credit" groups="point_of_sale.group_pos_manager"/>
+                    <field name="debit" groups="point_of_sale.group_pos_manager"/>
+                    <field name="balance" groups="point_of_sale.group_pos_manager"/>
+                    <field name="discount_id" groups="point_of_sale.group_pos_manager"/>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page string="Credit Log" name="credit" groups="point_of_sale.group_pos_manager">
+                        <field name="credit_history_ids" readonly="1"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+	--> 
+	<!-- QUITANDO CAMPOS QUE NO SE OCUPAN -->
+        <record id="pos_loyalty_member" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Contacts">
+                    <field name="display_name" string="Name"/>
+                    <field name="phone"/>
+                    <field name="mobile"/>
+                    <field name="email"/>
+                    <field name="wallet"/>
+                    <field name="pos_loyalty_point"/>
+                    <field name="pos_loyalty_type"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

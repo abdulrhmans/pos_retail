@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="daily_report">
+        <div class="clientlist-screen screen">
+            <div class="screen-content">
+                <section class="top-content">
+                    <span class='button back'>
+                        <i class='fa fa-angle-double-left'></i>
+                        Back
+                    </span>
+                    <span class='searchbox search_user'>
+                        <input placeholder='Search User' />
+                        <span class='search-clear'></span>
+                    </span>
+                    <span class='searchbox'></span>
+                    <span class="button new-customer print_daily_report" style="background: none">
+                        <img class="button_logo" src="/pos_retail/static/src/icons/printer.png"/>
+                    </span>
+                </section>
+                <section class="full-content">
+                    <div class='window'>
+                        <section class='subwindow collapsed'>
+                            <div class='subwindow-container collapsed'>
+                                <div class='subwindow-container-fix client-details-contents'>
+                                    <section>
+                                        <div class='client-details-box clearfix' stype="top:100px">
+                                            <div class="client-details-left">
+                                                <div class="client-detail">
+                                                    <span class="label">Address</span>
+
+                                                    <span class="detail client-address">69 rue de Namur, 1300 Wavre, Belgium</span>
+
+
+                                                </div>
+                                                <div class="client-detail">
+                                                    <span class="label">Email</span>
+
+                                                        <span class="detail client-email">agrolait@yourcompany.example.com</span>
+
+
+                                                </div>
+                                                <div class="client-detail">
+                                                    <span class="label">Phone</span>
+
+                                                        <span class="detail client-phone">+32 10 588 558</span>
+
+
+                                                </div>
+                                        </div>
+                                            <div class="client-detail">
+                                                <span class='label voucher-label'>From date</span>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group label-floating is-empty">
+                                                        <input type="text" class="form-control datetimepicker start_date"/>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="client-detail">
+                                                <span class='label voucher-label'>To date</span>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group label-floating is-empty">
+                                                        <input type="text" class="form-control datetimepicker end_date"/>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+                <div class="centered-content touch-scrollable" style="left: 30%; right: 25%; top: 200px">
+                    <div class="pos-receipt-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="daily_report_user_html">
+        <div class="pos-sale-ticket">
+            <div class="pos-center-align"><h3>Daily report</h3></div>
+            <t t-foreach='datas' t-as='data'>
+                <div class="pos-center-align">
+                    <t t-if='user'>
+                        <div class='cashier'>
+                            <div><h6>User: <t t-esc="user['display_name']" /></h6></div>
+                        </div>
+                    </t>
+                </div>
+                <br/>
+                <table class='receipt-orderlines'>
+                    <colgroup>
+                        <col width='50%' />
+                        <col width='25%' />
+                        <col width='25%' />
+                    </colgroup>
+                    <tr t-foreach="data.orderlines" t-as="line">
+                        <td>
+                            <img class='orderline_image' t-att-src="widget.product_icon_url(line['product_id'][0])"/>
+                            <t t-esc='line.product_id[1]' />
+                        </td>
+                        <td class="pos-right-align">
+                            <t t-esc='line.qty' />
+                        </td>
+                        <td class="pos-right-align">
+                            <t t-esc="widget.format_currency(line.price_unit)"/>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <table class='receipt-total'>
+                    <tr>
+                        <td>Total:</td>
+                        <td class="pos-right-align">
+                            <t t-esc="widget.format_currency(data.amount_total)"/>
+                        </td>
+                    </tr>
+                </table>
+            </t>
+        </div>
+    </t>
+
+
+</templates>

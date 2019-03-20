@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="pos_parameter_form" model="ir.ui.view">
+            <field name="name">pos.parameter.form</field>
+            <field name="model">pos.parameter</field>
+            <field name="arch" type="xml">
+                <form string="POS Parameter">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="model_name"/>
+                                <field name="domain"/>
+                                <field name="field_list"/>
+                                <field name="config_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="datas"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pos_parameter_tree" model="ir.ui.view">
+            <field name="name">pos.parameter.tree</field>
+            <field name="model">pos.parameter</field>
+            <field name="arch" type="xml">
+                <tree string="POS Parameter">
+                    <field name="model_name"/>
+                    <field name="domain"/>
+                    <field name="field_list"/>
+                    <field name="config_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="pos_parameter_search" model="ir.ui.view">
+            <field name="name">pos.parameter.filter</field>
+            <field name="model">pos.parameter</field>
+            <field name="arch" type="xml">
+                <search string="POS Parameter">
+                    <field name="model_name"/>
+                    <field name="domain"/>
+                    <field name="field_list"/>
+                    <field name="config_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_pos_parameter">
+            <field name="name">POS Parameters</field>
+            <field name="res_model">pos.parameter</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_action_pos_parameter"
+                  action="action_pos_parameter"
+                  parent="menu_retail"
+                  sequence="130"
+        />
+
+    </data>
+</odoo>

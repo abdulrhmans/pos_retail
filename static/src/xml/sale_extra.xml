@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="ProductListWidget">
+        <t t-jquery="div[class*='product-list-scroller']" t-operation="replace">
+            <t t-if="widget.pos.config.sale_extra">
+                <div class="product-list-scroller touch-scrollable">
+                    <div class="product-list-sale-extra" style="display:none">
+                    </div>
+                    <div class="product-list">
+                    </div>
+                </div>
+            </t>
+            <t t-if="!widget.pos.config.sale_extra">
+                <div class="product-list-scroller touch-scrollable">
+                    <div class="product-list">
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="product_sale_extra">
+        <span class='product' t-att-data-sale-extra-id="sale_extra['id']">
+            <div class="product-img">
+                <img t-att-src='image_url' />
+                <span class="price-tag">
+                    <t t-esc="widget.format_currency(sale_extra['list_price'], 'Product Price')"/>
+                </span>
+            </div>
+            <div class="product-name">
+                <t t-esc="product['display_name']"/>
+            </div>
+        </span>
+    </t>
+
+    <t t-extend="Orderline">
+        <t t-jquery=".info-list" t-operation="after">
+            <t t-if="widget.pos.config.sale_extra">
+                <t t-if="line.sales_extra">
+                    <ul class="sale_extra">
+                        <t t-foreach="line.sales_extra" t-as="sale_extra_id">
+                            <t t-set="sale_extra" t-value="line.get_sale_extra_by_id(sale_extra_id)"/>
+                            <t t-if="sale_extra">
+                                <li>
+                                    + <t t-esc="line.sales_extra[sale_extra_id]"/>
+                                    <t t-esc="sale_extra.product_id[1]"/>
+                                    at <t t-esc="widget.format_currency(sale_extra.list_price)"/>
+                                    <i class='fa fa-trash remove_sale_extra' t-att-data-sale-extra-id="sale_extra['id']"/>
+                                </li>
+                            </t>
+                        </t>
+                    </ul>
+                </t>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="PosTicket">
+        <t t-jquery="t[t-esc*='orderline.get_product().display_name']" t-operation="after">
+            <t t-if="orderline.sales_extra and widget.pos.config.sale_extra">
+                <div class="pos-disc-font">
+                    <t t-foreach="orderline.sales_extra" t-as="sale_extra_id">
+                        <t t-set="sale_extra" t-value="orderline.get_sale_extra_by_id(sale_extra_id)"/>
+                        <t t-if="sale_extra">
+                            <li>
+                                <t t-esc="sale_extra.product_id[1]"/>: <t t-esc="orderline.sales_extra[sale_extra_id]"/> x <t t-esc="widget.format_currency(sale_extra.list_price)"/>
+                            </li>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="XmlReceipt">
+        <t t-jquery="t[t-foreach*='orderlines'][t-as*='line']" t-operation="append">
+            <t t-if="line.sales_extra and pos.config.sale_extra">
+                <t t-foreach="line.sales_extra" t-as="sale_extra_id">
+                    <t t-set="line_extra" t-value="line.get_sale_extra_by_id(sale_extra_id)"/>
+                    <line font='b' line-ratio='0.4' indent='1'>
+                        <left>
+                            <t t-esc="line_extra['product_id'][1]"/>
+                        </left>
+                        <right>
+                            <t t-esc="line.get_quantity_extra(line.sales_extra, sale_extra_id)"/> x
+                            <value t-att-value-decimals='pos.currency.decimals'>
+                                <t t-esc="line_extra['list_price']"/>
+                            </value>
+                        </right>
+                    </line>
+                </t>
+            </t>
+        </t>
+    </t>
+
+</templates>

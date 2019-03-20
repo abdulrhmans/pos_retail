@@ -1,0 +1,17 @@
+<!-- Include dexie.js -->
+<script src="https://unpkg.com/dexie@^2.0.0-beta/dist/dexie.js"></script>
+
+<!-- Some HTML for the log window -->
+<a href="http://dexie.org/docs/API-Reference" target="_new">Dexie API Reference (new tab)</a>
+
+<h3>Log</h3>
+<textarea id="log"></textarea>
+<p id="safari-version" style="display:none;">
+  This browser denies indexedDB access from iframes.
+  <a href="https://fiddle.jshell.net/dfahlander/xf2zrL4p/show" target="_top">Click here to open it directly without any iframe.</a>
+</p>
+
+<!-- Just a simple log function... -->
+<script>
+  function log(txt) {document.getElementById('log').value+=txt+"\n";}
+</script>

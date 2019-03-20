@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="OrderChangeReceipt_html">
+        <div class="pos-sale-ticket">
+            <div class="pos-center-align"><t t-esc="moment().format('L LT')"/>
+                <div size='normal' ><t t-esc="changes.name" /></div>
+                <t t-if="changes.floor || changes.table">
+                    <div><span><t t-esc="changes.floor" /></span> / <span bold='on' size='double'><t t-esc="changes.table"/></span></div>
+                </t>
+                <t t-if="widget.pos.get_order() and widget.pos.get_order().guest">
+                    <div><span>Guest: <t t-esc="widget.pos.get_order().guest" /></span> / <span bold='on' size='double'><t t-esc="widget.pos.get_order().guest_number"/></span></div>
+                </t>
+                <t t-if="changes.cancelled.length > 0">
+                    <div color='red'>
+                        <table>
+                            <tr margin-top="20%;padding-top:4%">
+                                <th style="border-bottom: solid 1px black;width: 15%">Quantity</th>
+                                <th style="text-align:center;border-bottom: solid 1px black; width: 50%">Product</th>
+                            </tr>
+                            <t t-foreach="changes.cancelled" t-as="change">
+                                <tr style="border-bottom: solid 1px black;">
+                                    <td align="center">
+                                        <t t-esc="change.qty" />
+                                    </td>
+                                    <td align="left">
+                                        <span style="font-weight:900" t-esc="change.name_wrapped[0]" />
+                                        <t t-if="change.note">
+                                            <br/>
+                                            Note: <t t-esc="change.note" />
+                                        </t>
+                                        <br/>
+                                        <t t-if="change.sales_extra">
+                                            <t t-foreach="change.sales_extra" t-as="sale_extra">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        + <value><t t-esc="sale_extra.qty" /></value><t t-esc="sale_extra.product_name_wrapped" />
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                        <t t-if="change.tags">
+                                            <t t-foreach="change.tags" t-as="tag">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        <t t-esc="tag.name"/>
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                        <t t-if="change.variants">
+                                            <t t-foreach="change.variants" t-as="variant">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        + <value><t t-esc="variant.quantity" /></value><t t-esc="variant.value_id[1]" />
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </t>
+                <t t-if="changes.new.length > 0">
+                    <div bold='on' size='double'>NEW <span bold='off' size='double-height'><t t-esc='changes.time.hours' />:<t t-esc='changes.time.minutes' /></span> </div>
+                        <table>
+                            <tr margin-top="20%;padding-top:4%">
+                                <th style="border-bottom: solid 1px black;width: 15%">Quantity</th>
+                                <th style="text-align:center;border-bottom: solid 1px black; width: 50%">Product</th>
+                            </tr>
+                            <t t-foreach="changes.new" t-as="change">
+                                <tr style="border-bottom: solid 1px black;">
+                                    <td align="center">
+                                        <t t-esc="change.qty" />
+                                    </td>
+                                    <td align="left">
+                                        <span style="font-weight:900" t-esc="change.name_wrapped[0]" />
+                                        <span t-if="change.note">
+                                            <br/>
+                                            Note: <t t-esc="change.note" />
+                                        </span>
+                                        <br/>
+                                        <t t-if="change.sales_extra">
+                                            <t t-foreach="change.sales_extra" t-as="sale_extra">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        + <value><t t-esc="sale_extra.qty" /></value><t t-esc="sale_extra.product_name_wrapped" />
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                        <t t-if="change.tags">
+                                            <t t-foreach="change.tags" t-as="tag">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        <t t-esc="tag.name"/>
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                        <t t-if="change.variants">
+                                            <t t-foreach="change.variants" t-as="variant">
+                                                <ul class="bus-info">
+                                                    <li class="info">
+                                                        + <value><t t-esc="variant.quantity" /></value><t t-esc="variant.value_id[1]" />
+                                                    </li>
+                                                </ul>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-extend="OrderChangeReceipt">
+        <t t-jquery="receipt" t-operation="replace">
+            <receipt
+                align='center'
+                width='40'
+                size='double-height'
+                line-ratio='0.4'
+                value-decimals='3'
+                value-thousands-separator=''
+                value-autoint='on'
+            >
+                <div size='normal' ><t t-esc="changes.name" /></div>
+                <t t-if="changes.floor || changes.table">
+                    <br />
+                    <div><span><t t-esc="changes.floor" /></span> / <span bold='on' size='double'><t t-esc="changes.table"/></span></div>
+                </t>
+                <br />
+                <t t-if="widget.pos.get_order() and widget.pos.get_order().guest">
+                    <div><span>Guest: <t t-esc="widget.pos.get_order().guest" /></span> / <span bold='on' size='double'><t t-esc="widget.pos.get_order().guest_number"/></span></div>
+                    <br />
+                    <br />
+                </t>
+                <br />
+                <t t-if="changes.cancelled.length > 0">
+                    <div color='red'>
+                        <div bold='on' size='double'>CANCELLED <span bold='off' size='double-height'><t t-esc='changes.time.hours' />:<t t-esc='changes.time.minutes' /></span> </div>
+                        <br />
+                        <br />
+                        <t t-foreach="changes.cancelled" t-as="change">
+                            <line>
+                                <left><value><t t-esc="change.qty" /></value></left>
+                                <right><t t-esc="change.name_wrapped[0]" /></right>
+                            </line>
+                            <t t-call="NameWrapped"/>
+                            <t t-if="change.note">
+                                <line>
+                                    <left>NOTE</left>
+                                    <right>...</right>
+                                </line>
+                                <div><span font='b' bold='off' line-ratio='0.4' indent='1' width='30'>--- <t t-esc="change.note" /></span></div>
+                                <line></line>
+                            </t>
+                            <t t-if="change.sales_extra">
+                                <t t-foreach="change.sales_extra" t-as="sale_extra">
+                                    <line font='b' line-ratio='0.4' indent='1'>
+                                        <left> + <value><t t-esc="sale_extra.qty" /></value></left>
+                                        <right><t t-esc="sale_extra.product_name_wrapped" /></right>
+                                    </line>
+                                </t>
+                            </t>
+                            <t t-if="change.tags">
+                                <t t-foreach="change.tags" t-as="tag">
+                                    <t t-foreach="change.tags" t-as="tag">
+                                        <line font='b' line-ratio='0.4' indent='1'>
+                                            <right><t t-esc="tag.name"/></right>
+                                        </line>
+                                    </t>
+                                </t>
+                            </t>
+                            <t t-if="change.variants">
+                                <t t-foreach="change.variants" t-as="variant">
+                                    <line font='b' line-ratio='0.4' indent='1'>
+                                        <left> <value><t t-esc="variant.quantity" /></value></left>
+                                        <right><t t-esc="variant.value_id[1]" /></right>
+                                    </line>
+                                </t>
+                            </t>
+                        </t>
+                        <br />
+                        <br />
+                    </div>
+                </t>
+                <t t-if="changes.new.length > 0">
+                    <div bold='on' size='double'>NEW <span bold='off' size='double-height'><t t-esc='changes.time.hours' />:<t t-esc='changes.time.minutes' /></span> </div>
+                    <br />
+                    <br />
+                    <t t-foreach="changes.new" t-as="change">
+                        <line>
+                            <left><value><t t-esc="change.qty" /></value></left>
+                            <right><t t-esc="change.name_wrapped[0]" /></right>
+                        </line>
+                        <t t-call="NameWrapped"/>
+                        <t t-if="change.note">
+                            <line>
+                                <left>NOTE</left>
+                                <right>...</right>
+                            </line>
+                            <div><span font='b' bold='off' line-ratio='0.4' indent='1' width='30'>--- <t t-esc="change.note" /></span></div>
+                            <line></line>
+                        </t>
+                        <t t-if="change.sales_extra">
+                            <t t-foreach="change.sales_extra" t-as="sale_extra">
+                                <line font='c' line-ratio='0.4' indent='1'>
+                                    <left> + <value><t t-esc="sale_extra.qty" /></value></left>
+                                    <right><t t-esc="sale_extra.product_name_wrapped" /></right>
+                                </line>
+                            </t>
+                        </t>
+                        <t t-if="change.tags">
+                            <t t-foreach="change.tags" t-as="tag">
+                                <line font='b' line-ratio='0.4' indent='1'>
+                                    <right><t t-esc="tag.name"/></right>
+                                </line>
+                            </t>
+                        </t>
+                        <t t-if="change.variants">
+                            <t t-foreach="change.variants" t-as="variant">
+                                <line font='b' line-ratio='0.4' indent='1'>
+                                    <left> <value><t t-esc="variant.quantity" /></value></left>
+                                    <right><t t-esc="variant.value_id[1]" /></right>
+                                </line>
+                            </t>
+                        </t>
+                    </t>
+                    <br />
+                    <br />
+                </t>
+            </receipt>
+        </t>
+    </t>
+
+</templates>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="Chrome">
+        <t t-jquery="div[class='subwindow-container']" t-operation="prepend">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide swiper_buttons_list">
+                        <div class="buttons_pane order-scroller touch-scrollable">
+                            <div class="button-list"/>
+                        </div>
+                    </div>
+                    <div class="swiper-slide swiper_order_widget"/>
+                    <div class="swiper-slide swiper_product_widget"/>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="ProductScreenWidget">
+        <t t-jquery="div[class*='leftpane']" t-operation="before">
+            <t t-if="!widget.pos.config.mobile_responsive">
+                <div class="buttons_pane order-scroller touch-scrollable">
+                    <div class="button-list"/>
+                </div>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="ProductCategoriesWidget">
+        <t t-jquery="header[class*='rightpane-header']" t-operation="replace">
+            <header class='rightpane-header'>
+                <div class="breadcrumbs">
+                    <span class="breadcrumb">
+                        <span class=" breadcrumb-button breadcrumb-home js-category-switch">
+                            <i class='fa fa-home'></i>
+                        </span>
+                    </span>
+                    <t t-foreach="widget.breadcrumb" t-as="category">
+                        <span class="breadcrumb">
+                            <img src="/point_of_sale/static/src/img/bc-arrow-big.png" class="breadcrumb-arrow" />
+                            <span class="breadcrumb-button js-category-switch category_child" t-att-data-category-id="category.id">
+                                <t t-esc="category.name"/>
+                            </span>
+                        </span>
+                    </t>
+                </div>
+                <div class="searchbox">
+                    <input placeholder="Search Products" />
+                    <span class="fa fa fa-refresh search-clear"></span>
+                </div>
+            </header>
+        </t>
+    </t>
+
+    <t t-extend="HeaderButtonWidget">
+        <t t-jquery="div[class*='header-button']" t-operation="replace">
+            <div class="header-button fa fa-close"/>
+        </t>
+    </t>
+
+    <t t-name="mobile_widget">
+        <div class="shop_logo">
+            <img class="logo_shop_header" src="/pos_retail/static/src/icons/mobile_widget.png"/>
+        </div>
+    </t>
+
+    <t t-name="pc_widget">
+        <div class="shop_logo">
+            <img class="logo_shop_header" src="/pos_retail/static/src/icons/pc.png"/>
+        </div>
+    </t>
+
+</templates>
